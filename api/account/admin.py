@@ -4,5 +4,8 @@ from . import models
 
 
 admin.site.register(models.ChildModel)
+admin.site.register(models.BirthCertificateModel)
+
 admin.site.register(models.RepresentativeModel)
-admin.site.register(models.PassportModel)
+admin.site.register(models.RussianPassportModel)
+admin.site.register(models.ForeignPassportModel)

@@ -40,6 +40,7 @@ class PassportView(APIView):
         representative = GetRepresentativeView.get_representative(
             user=request.user
         )
+
         serializer = self.serializer_class(
             representative,
             request.data,
@@ -62,10 +63,14 @@ class ChildView(APIView):
         representative = GetRepresentativeView.get_representative(
             user=request.user
         )
-        
-        address = get_object_or_404(
+
+        registration_address = get_object_or_404(
             AddressModel,
-            pk=request.data.get("address_id")
+            pk=request.data.get("registration_address_id")
+        )
+        residence_address = get_object_or_404(
+            AddressModel,
+            pk=request.data.get("residence_address_id")
         )
     
         serializer = self.serializer_class(
@@ -73,10 +78,35 @@ class ChildView(APIView):
         )
         
         serializer.is_valid()
-        child = serializer.save(address=address)
+        
+        birth_certificate = None
+        russian_passport = None
+        foreign_passport = None
+        
+        
+        if serializer.document_type == "birth_certificate":
+            birth_certificate = models.BirthCertificateModel.objects.create(
+                **request.data
+            )
+        elif serializer.citizenship == "Россия":
+            russian_passport = models.RussianPassportModel.objects.create(
+                **request.data
+            )      
+        else:
+            foreign_passport = models.RussianPassportModel.objects.create(
+                **request.data
+            )   
+
+        child = serializer.save(
+            residence_address=residence_address,
+            registration_address=registration_address,
+            birth_certificate=birth_certificate,
+            russian_passport=russian_passport,
+            foreign_passport=foreign_passport
+        )
 
         representative.children.add(child)
-        
+
         return Response(
             serializer.data,
             status.HTTP_200_OK
@@ -86,12 +116,12 @@ class ChildView(APIView):
         representative = GetRepresentativeView.get_representative(
             user=request.user
         )
-        
+
         serializer = self.serializer_class(
             representative.children.all(),
             many=True
         )
-        
+
         return Response(
             serializer.data,
             status.HTTP_200_OK
@@ -110,9 +140,7 @@ class DetailChildView(APIView):
         child.delete()
         
         return Response(
-            {
-                "detail": "Deleted"
-            },
+            {},
             status.HTTP_200_OK
         )
     
@@ -132,7 +160,7 @@ class DetailChildView(APIView):
         )
 
 
-class AddressView(APIView):
+class RepresentativeAddressView(APIView):
     serializer_class = serializers.RepresentativeSerializer
     
     def put(self, request: Request):
@@ -140,10 +168,16 @@ class AddressView(APIView):
             user=request.user
         )
         
-        address = get_object_or_404(
+        registration_address = get_object_or_404(
             AddressModel,
-            pk=request.data.get("address_id")
+            pk=request.data.get("registration_address_id")
         )
+        
+        residence_address = get_object_or_404(
+            AddressModel,
+            pk=request.data.get("residence_address_id")
+        )
+
         serializer = self.serializer_class(
             representative,
             request.data,
@@ -151,7 +185,10 @@ class AddressView(APIView):
         )
         
         serializer.is_valid(raise_exception=True)
-        serializer.save(address=address)
+        serializer.save(
+            registration_address=registration_address,
+            residence_address=residence_address
+        )
         
         return Response(
             serializer.data,
