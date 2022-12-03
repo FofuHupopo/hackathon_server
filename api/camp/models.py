@@ -30,7 +30,7 @@ class CampOrganizationModel(models.Model):
 
     description = models.CharField(
         "Описание", max_length=1024,
-        default=''
+        default=""
     )
 
     camping_type = models.CharField(
@@ -171,3 +171,10 @@ class СampEventModel(models.Model):
         default=False
     )
 
+    def save(self, *args, **kwargs):
+        """Поправляем тип смены при необходимости"""
+
+        if self.season != "summer":
+            self.camping_type = "stationary"
+
+        return super().save(*args, **kwargs)
