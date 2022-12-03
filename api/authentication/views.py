@@ -23,17 +23,12 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             )
-            # del response.data['refresh']
-
-        if response.data.get("access"):
-            access = AccessToken(response.data["access"])
-            user = get_user_model().objects.filter(id=access["user_id"]).first()
+            del response.data['refresh']
 
         return super().finalize_response(request, response, *args, **kwargs)
 
 
 class CookieTokenRefreshView(TokenRefreshView):
-    serializer_class = serializer.CookieTokenRefreshSerializer
     permission_classes = (AllowAny,)
 
     def finalize_response(self, request, response: Response, *args, **kwargs):
@@ -48,20 +43,7 @@ class CookieTokenRefreshView(TokenRefreshView):
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
                 domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN']
             )
-            # del response.data["refresh"]
 
-        if response.data.get("access"):
-            access = AccessToken(response.data["access"])
-            user = get_user_model().objects.filter(id=access["user_id"]).first()
-
-            # if user:
-            #     serialized_user = GetUserSerializer(data=model_to_dict(user))
-            #     serialized_user.initial_data["avatar"] = user.avatar.url
-            #     print(user.avatar.url)
-            #     serialized_user.is_valid()
-
-            #     response.data["user"] = serialized_user.data
-
-            # print(access)
+            del response.data["refresh"]
 
         return super().finalize_response(request, response, *args, **kwargs)

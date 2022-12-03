@@ -6,7 +6,7 @@ from .manager import UserManager
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
-    login = models.CharField(
+    username = models.CharField(
         'Логин', max_length=64, unique=True,
     )
     email = models.EmailField(
@@ -22,23 +22,27 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     lastname = models.CharField(
         'Фамилия', max_length=64, blank=True,
     )
+    patronymic = models.CharField(
+        'Отчество', max_length=64,
+        null=True, blank=True
+    )
 
     ROLE_CHOICES = (
-        ("teacher", "Учитель"),
-        ("parent", "Родитель"),
-        ("student", "Ученик")
+        ("client", "Клиент"),
+        ("organization", "Организация"),
+        ("staff", "Сотрудник"),
     )
 
     role = models.CharField(
         'Роль', max_length=12,
-        choices=ROLE_CHOICES, default="student"
+        choices=ROLE_CHOICES, default="client"
     )
 
     is_online = models.BooleanField(
         'Онлайн?', default=False
     )
     is_staff = models.BooleanField(
-        "Модератор?", default=False
+        "Сотрудник?", default=False
     )
     is_active = models.BooleanField(
         "Активный?", default=True,
@@ -51,11 +55,8 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(
         "Дата регистрации", default=timezone.now
     )
-    last_visit = models.DateTimeField(
-        "Последнее посещение", default=timezone.now
-    )
 
-    USERNAME_FIELD = 'login'
+    USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = [
         'email', 'phone'
     ]
