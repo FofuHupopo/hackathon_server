@@ -42,8 +42,21 @@ class CityModel(models.Model):
 
 
 class AddressModel(models.Model):
-    city = models.ForeignKey(
-        CityModel, models.CASCADE, verbose_name="Город",
+    country = models.CharField(
+        "Страна", max_length=128,
+        default="Россия",
+    )
+    region = models.CharField(
+        "Регион", max_length=128,
+        null=True,
+    )
+    area = models.CharField(
+        "Район", max_length=128,
+        null=True
+    )
+    city = models.CharField(
+        "Город", max_length=128,
+        null=True
     )
     street = models.TextField(
         "Улица"

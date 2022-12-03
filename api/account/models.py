@@ -1,7 +1,23 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth import get_user_model
 
 from api.address import models as address_models
+
+
+def create_role_model(user):
+    role: str = user.role
+    
+    if role != "client":
+        return
+    
+    RepresentativeModel.objects.create(
+        user=user,
+        firstname=user.firstname,
+        lastname=user.lastname,
+        patronymic=user.patronymic,
+        phone=user.phone
+    )
 
 
 class PassportModel(models.Model):
@@ -16,6 +32,9 @@ class PassportModel(models.Model):
     )
     whom_issued = models.TextField(
         "Кем выдан", null=True
+    )
+    duration = models.DateTimeField(
+        "Срок действия", null=True
     )
     
     PASSPORT_TYPES = (
@@ -54,19 +73,44 @@ class ChildModel(models.Model):
         'Отчество', max_length=64,
         null=True, blank=True
     )
+    registration_address = models.ForeignKey(
+        address_models.AddressModel, models.PROTECT,
+        verbose_name="Адрес регистрации", related_name="registration_address",
+        null=True, blank=True
+    )
+    residence_address = models.ForeignKey(
+        address_models.AddressModel, models.PROTECT,
+        verbose_name="Адрес проживания", related_name="residence_address",
+        null=True, blank=True
+    )
+    
+    snils = models.CharField(
+        "СНИЛС", max_length=11,
+        null=True, blank=True
+    )
+    phone = models.CharField(
+        "Телефон", max_length=10,
+        null=True, blank=True
+    )
 
-    birthday_date = models.DateTimeField(
-        "Дата регистрации", default=timezone.now
+    birthday_date = models.DateField(
+        "Дата регистрации"
     )
     
     class Meta:
         db_table = "account__child"
         verbose_name = "Ребенок"
         verbose_name_plural = "Дети"
-    
+        
+    def __str__(self) -> str:
+        return f"{self.pk}: {self.firstname} {self.lastname}"
 
 
 class RepresentativeModel(models.Model):
+    user = models.ForeignKey(
+        get_user_model(), models.CASCADE,
+        null=True, blank=True
+    )
     firstname = models.CharField(
         'Имя', max_length=64, blank=True,
     )
@@ -77,12 +121,11 @@ class RepresentativeModel(models.Model):
         'Отчество', max_length=64,
         null=True, blank=True
     )
-    
-    address = models.ForeignKey(
-        address_models.AddressModel, models.PROTECT,
-        verbose_name="Адрес",
+    phone = models.CharField(
+        "Телефон", max_length=10,
         null=True, blank=True
     )
+    
     passport = models.ForeignKey(
         PassportModel, models.PROTECT,
         verbose_name="Паспорт",
@@ -102,6 +145,8 @@ class RepresentativeModel(models.Model):
         "Статус", max_length=32,
         choices=REPRESENTATIVE_STATUSES, default="parent"
     )
+    
+    objects = models.Manager()
     
     class Meta:
         db_table = "account__representative"

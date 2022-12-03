@@ -2,14 +2,50 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.conf import settings
 
-from . import serializer
+from api.email import SendMailManager
+from . import serializers
 from . import models
+
+
+class RegistrationView(APIView):
+    serializer_class = serializers.RegistrationSerializer
+    permission_classes = (AllowAny, )
+
+    def post(self, request: Request) -> Response:
+        serializer = self.serializer_class(
+            data=request.data
+        )
+        
+        serializer.is_valid(raise_exception=True)
+        serializer.create(serializer.validated_data)
+        
+        return Response(
+            serializer.data,
+            status.HTTP_201_CREATED
+        )
+        
+        
+class UserLogoutView(APIView):
+    permission_classes = (AllowAny,)
+
+    @staticmethod
+    def get(request: Request) -> Response:
+        response = Response(status=status.HTTP_200_OK)
+
+        if response.cookies.get("refresh_token"):
+            response.data = {"detail": "Пользователь вышел из аккаунта"}
+        else:
+            response.data = {"detail": "Вы не были аутентифицированы"}
+
+        response.delete_cookie("refresh_token")
+
+        return response
 
 
 class CookieTokenObtainPairView(TokenObtainPairView):
@@ -47,3 +83,72 @@ class CookieTokenRefreshView(TokenRefreshView):
             del response.data["refresh"]
 
         return super().finalize_response(request, response, *args, **kwargs)
+    
+
+class SendCodeView(APIView):
+    serializer_class = serializers.ConfirmCodeSerializer
+    
+    def get(self, request: Request) -> Response:
+        if request.user.email_confirmed:
+            return Response(
+                {
+                    "detail": "Ваша почта уже подтверждена"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        
+        code = models.ConfirmCodeModel.generate_code(
+            request.user
+        )
+            
+        SendMailManager(request.user.email).send(
+            "Подтверждение почты",
+            f"Код подверждения почты: {code.code}"
+        )
+        
+        return Response(
+            {
+                "detail": "Код отправлен на почту"
+            },
+            status.HTTP_200_OK
+        )
+
+
+class ConfirmCodeView(APIView):
+    serializer_class = serializers.ConfirmCodeSerializer
+
+    def post(self, request: Request) -> Response:
+        code = request.data.get("code", None)
+
+        if not code:
+            return Response(
+                {
+                    "detail": "Код не был передан"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+
+        code: models.ConfirmCodeModel = get_object_or_404(
+            models.ConfirmCodeModel,
+            code=code
+        )
+
+        if code.is_valid():
+            user = code.user
+            code.confirm_user()
+
+            serializer = serializers.UserSerializer(
+                user
+            )
+
+            return Response(
+                serializer.data,
+                status.HTTP_200_OK
+            )
+
+        return Response(
+            {
+                "detail": "Код устарел"
+            },
+            status.HTTP_400_BAD_REQUEST
+        )
