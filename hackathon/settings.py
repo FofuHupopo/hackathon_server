@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'api.authentication',
     'api.address',
     'api.account',
+    'api.camp',
     
     #CRM
     'crm',
