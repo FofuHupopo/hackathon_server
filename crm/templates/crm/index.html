@@ -6,7 +6,22 @@
 
 {% block content %}
 <div class="container">
-    
+    <ul>
+    {% for camp in camps%}
+        <li>
+            <div>
+                <p>{{ camp.title }}</p>
+                <p>{{ camp.camping_type }}</p>
+                <p>{{ camp.camp_organization }}</p>
+                <p>{{ camp.date_begin }}</p>
+                <p>{{ camp.date_end }}</p>
+                <p>{{ camp.season }}</p>
+                <p>{{ camp.having_rest_certificate }}</p>
+                <a href="#"></a>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
 </div>
 {% endblock %}
 

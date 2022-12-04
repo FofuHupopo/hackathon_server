@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Список заявок</h2>
+    <ul>
+    {% for in %}
+        <li>
+            <div>
+                <p>{{ camp.title }}</p>
+            </div>
+        </li>
+    {% endfor %}
+    </ul>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
