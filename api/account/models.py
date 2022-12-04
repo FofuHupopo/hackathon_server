@@ -265,3 +265,6 @@ class RepresentativeModel(models.Model):
             return self.russian_passport
         
         return self.foreign_passport
+
+    def check_child(self, child: ChildModel):
+        return child in self.children.all()

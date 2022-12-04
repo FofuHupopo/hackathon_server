@@ -15,6 +15,8 @@ from . import models
 
 
 class CreateRequestView(APIView):
+    serializer_class = serializers.RequestSerializer
+
     def get(self, request: Request):
         child_id = request.query_params.get("child_id")
         camp_event_id = request.query_params.get("camp_event_id")
@@ -32,7 +34,7 @@ class CreateRequestView(APIView):
             pk=child_id
         )
         camp_event = get_object_or_404(
-            camp_models.СampEventModel,
+            camp_models.CampEventModel,
             pk=child_id
         )
         representative = get_object_or_404(
@@ -40,3 +42,25 @@ class CreateRequestView(APIView):
             user=request.user
         )
         
+        if not representative.check_child(child):
+            return Response(
+                {
+                    "detail": "Некорректный запрос"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        
+        request = models.RequestModel.objects.create(
+            child=child,
+            camp_event=camp_event,
+            representative=representative
+        )
+        
+        serializer = self.serializer_class(
+            request
+        )
+        
+        return Response(
+            serializer.data,
+            status.HTTP_200_OK
+        )
