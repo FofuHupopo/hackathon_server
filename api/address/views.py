@@ -55,6 +55,8 @@ class AddressView(APIView):
 
 
 class CountryAutoCompleteView(APIView):
+    permission_classes = (AllowAny, )
+
     def get(self, request: Request):
         search = request.query_params.get("search", "")
         
