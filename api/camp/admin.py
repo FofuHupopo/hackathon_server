@@ -5,6 +5,7 @@ from django.utils.http import urlencode
 
 from . import models
 
+
 class CampEventModelAdmin(admin.ModelAdmin):
     list_display = ("title", "camp_organization", "view_requests", "export_requests")
 
@@ -16,7 +17,7 @@ class CampEventModelAdmin(admin.ModelAdmin):
             + urlencode({"camp_event": f"{obj.id}"})
         )
         return format_html('<a href="{}">Просмотреть заявки</a>', url)
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
@@ -24,6 +25,9 @@ class CampEventModelAdmin(admin.ModelAdmin):
             return qs
 
         return qs.filter(camp_organization__user=request.user)
+
+    def camp_organization(self, request):
+        return models.CampOrganizationModel.objects.filter(user=request.user)
 
     @admin.display(description="Экспорт заявок")
     def export_requests(self, obj):
@@ -33,9 +37,10 @@ class CampEventModelAdmin(admin.ModelAdmin):
         )
         return format_html('<a href="{}">Скачать в .xlsx</a>', url)
 
+
 class CampOrganizationModelAdmin(admin.ModelAdmin):
     list_display = ("title",)
-    
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
 
@@ -43,6 +48,18 @@ class CampOrganizationModelAdmin(admin.ModelAdmin):
             return qs
 
         return qs.filter(user=request.user)
+
+    def get_readonly_fields(self, request, obj=None):
+        if request.user.is_superuser:
+            return []
+
+        return ["user"]
+
+    def save_model(self, request, obj, form, change):
+        if not obj.user:
+            obj.user = request.user
+
+        super().save_model(request, obj, form, change)
 
 
 admin.site.register(models.CampEventModel, CampEventModelAdmin)
