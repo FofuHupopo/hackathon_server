@@ -13,7 +13,7 @@ from . import models, serializers
 def _parse_date(
         date_time: Optional[str]) -> (
             Optional[datetime.date]):
-    if date_time is None:
+    if not date_time:
         return None
 
     try:
@@ -73,14 +73,14 @@ class CampEventView(APIView):
         """Фильтрация всех смен по параметрам"""
         return models.CampEventModel.objects.filter(
             **({"camping_type": camping_type}
-               if camping_type is not None else {}),
+               if not camping_type else {}),
 
             **({"date_begin__gte": date_begin}
-               if date_begin is not None else {}),
+               if not date_begin else {}),
 
             **({"date_end__lte": date_end}
-               if date_end is not None else {}),
+               if not date_end else {}),
 
             **({"season": season}
-               if season is not None else {}),
+               if not season else {}),
         )
