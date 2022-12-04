@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework import status
-from django.shortcuts import get_object_or_404
+from rest_framework.permissions import AllowAny
 
 from . import models, serializers
 
@@ -25,6 +25,7 @@ def _parse_date(
 
 
 class CampEventView(APIView):
+    permission_classes = (AllowAny,)
     serializer_class = serializers.CampEventSerializer
 
     def get(self, request: Request):
@@ -35,18 +36,8 @@ class CampEventView(APIView):
             camping_type = "army"
 
         date_begin = _parse_date(qparams.get("start"))
-        if date_begin is None:
-            return Response(
-                {"detail": "Invalid \"start\" date param"},
-                status.HTTP_400_BAD_REQUEST
-            )
 
         date_end = _parse_date(qparams.get("end"))
-        if date_end is None:
-            return Response(
-                {"detail": "Invalid \"end\" date param"},
-                status.HTTP_400_BAD_REQUEST
-            )
 
         season = qparams.get("time")
         if season == "autumn":
@@ -73,14 +64,14 @@ class CampEventView(APIView):
         """Фильтрация всех смен по параметрам"""
         return models.CampEventModel.objects.filter(
             **({"camping_type": camping_type}
-               if not camping_type else {}),
+               if camping_type else {}),
 
             **({"date_begin__gte": date_begin}
-               if not date_begin else {}),
+               if date_begin else {}),
 
             **({"date_end__lte": date_end}
-               if not date_end else {}),
+               if date_end else {}),
 
             **({"season": season}
-               if not season else {}),
+               if season else {}),
         )
