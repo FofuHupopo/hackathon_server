@@ -68,7 +68,6 @@ class RepresentativeSerializer(serializers.ModelSerializer):
                 instance.save()
         else:
             if instance.foreign_passport:
-                print("hi")
                 instance.foreign_passport.series = passport.get("series", instance.foreign_passport.series)
                 instance.foreign_passport.number = passport.get("number", instance.foreign_passport.number)
                 instance.foreign_passport.date_of_issue = passport.get("date_of_issue", instance.foreign_passport.date_of_issue)

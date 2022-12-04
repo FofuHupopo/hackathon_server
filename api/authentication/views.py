@@ -126,18 +126,27 @@ class SendCodeView(APIView):
         code = models.ConfirmCodeModel.generate_code(
             request.user
         )
-            
-        SendMailManager(request.user.email).send(
-            "Подтверждение почты",
-            f"Код подверждения почты: {code.code}"
-        )
+
+        print(f"EMAIL CODE: {code.code}")
+        try:
+            SendMailManager(request.user.email).send(
+                "Подтверждение почты",
+                f"Код подверждения почты: {code.code}"
+            )
         
-        return Response(
-            {
-                "detail": "Код отправлен на почту"
-            },
-            status.HTTP_200_OK
-        )
+            return Response(
+                {
+                    "detail": "Код отправлен на почту"
+                },
+                status.HTTP_200_OK
+            )
+        except Exception:
+            return Response(
+                {
+                    "detail": "Неудалось отправить код"
+                },
+                status.HTTP_200_OK
+            )
 
 
 class ConfirmCodeView(APIView):

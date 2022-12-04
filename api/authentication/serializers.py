@@ -49,6 +49,9 @@ class RegistrationSerializer(serializers.ModelSerializer):
         create_role_model(user, self.initial_data.get("citizenship", "россия").lower())
 
         return user
+    
+    def validate_email(self):
+        ...
 
 
 class ConfirmCodeSerializer(serializers.ModelSerializer):

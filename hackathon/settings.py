@@ -22,7 +22,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',
+    
     "corsheaders",
     'rest_framework',
     
@@ -188,6 +188,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
+
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = False
