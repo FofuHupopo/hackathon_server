@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from api.authentication.serializers import UserSerializer
 from . import models
 
 
@@ -26,6 +27,7 @@ class RepresentativeSerializer(serializers.ModelSerializer):
     russian_passport = RussianPassportSerializer()
     foreign_passport = ForeignPassportSerializer()
     children = ChildSerializer(many=True)
+    user = UserSerializer()
 
     class Meta:
         model = models.RepresentativeModel
