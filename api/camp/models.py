@@ -185,6 +185,10 @@ class CampEventModel(models.Model):
         default=False
     )
     
+    price = models.IntegerField(
+        "Цена", default=0
+    )
+    
     def __str__(self) -> str:
         return f"{self.title}"
 
