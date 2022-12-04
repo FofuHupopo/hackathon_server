@@ -6,8 +6,10 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from fuzzywuzzy import fuzz
 
 from api.requests import DadataAddressSearch
+from api.account.countries import COUNTRIES
 from . import serializers
 from . import models
 
@@ -48,4 +50,38 @@ class AddressView(APIView):
         return Response(
             serializer.data,
             status.HTTP_201_CREATED
+        )
+
+
+
+class CountryAutoCompleteView(APIView):
+    def get(self, request: Request):
+        search = request.query_params.get("search", "")
+        
+        response = []
+        
+        if not search:
+            return Response(
+                response,
+                status.HTTP_200_OK
+            )
+            
+        for country in COUNTRIES:
+            coincidence = fuzz.ratio(search.lower(), country[0].lower())
+            response.append((country, coincidence))
+
+            if coincidence == 100:
+                return Response(
+                    [country],
+                    status.HTTP_200_OK
+                )
+
+        response = sorted(response, key=lambda value: value[1], reverse=True)[:5]
+
+        return Response(
+            list(map(
+                lambda value: value[0][1],
+                response
+            )),
+            status.HTTP_200_OK
         )

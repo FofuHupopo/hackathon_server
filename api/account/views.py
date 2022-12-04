@@ -6,8 +6,10 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
 from django.conf import settings
+from fuzzywuzzy import fuzz
 
 from api.address.models import AddressModel
+from .countries import COUNTRIES
 from . import serializers
 from . import models
 
