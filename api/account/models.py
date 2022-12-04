@@ -12,6 +12,8 @@ def create_role_model(user, citizenship):
     if role != "client":
         return
     
+    print("citizenship")
+    
     RepresentativeModel.objects.create(
         user=user,
         firstname=user.firstname,

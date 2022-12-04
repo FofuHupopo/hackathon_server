@@ -24,7 +24,11 @@ class RegistrationView(APIView):
         )
         
         serializer.is_valid(raise_exception=True)
-        serializer.create(serializer.validated_data)
+        user = serializer.create(serializer.validated_data)
+        
+        serializer = serializers.UserSerializer(
+            user
+        )
         
         return Response(
             serializer.data,
