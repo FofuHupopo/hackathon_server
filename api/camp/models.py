@@ -1,4 +1,5 @@
 from typing import Tuple
+from django.contrib.auth import get_user_model
 import datetime
 
 from django.db import models
@@ -23,6 +24,12 @@ class CampOrganizationModel(models.Model):
         verbose_name_plural = "Лагеря"
 
     # Раздел "Общая информацияcamp_event о лагере":
+    
+    user = models.ForeignKey(
+        get_user_model(), models.CASCADE,
+        verbose_name="Пользователь",
+        null=True, blank=True
+    )
 
     title = models.CharField(
         "Название", max_length=32,

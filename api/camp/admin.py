@@ -16,9 +16,25 @@ class CampEventModelAdmin(admin.ModelAdmin):
             + urlencode({"camp_event": f"{obj.id}"})
         )
         return format_html('<a href="{}">Просмотреть заявки</a>', url)
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        if request.user.is_superuser:
+            return qs
+
+        return qs.filter(camp_organization__user=request.user)
 
 class CampOrganizationModelAdmin(admin.ModelAdmin):
     list_display = ("title",)
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+
+        if request.user.is_superuser:
+            return qs
+
+        return qs.filter(user=request.user)
 
 
 admin.site.register(models.CampEventModel, CampEventModelAdmin)

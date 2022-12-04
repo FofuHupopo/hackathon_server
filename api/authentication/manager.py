@@ -1,4 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
+from django.contrib.auth.models import Permission
 
 
 class UserManager(BaseUserManager):
@@ -10,6 +11,17 @@ class UserManager(BaseUserManager):
 
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
+        user.save()
+        
+        if user.role == "organization":
+            user.is_staff = True
+            
+            user.user_permissions.set(
+                Permission.objects.filter(
+                    content_type_id__in=(10, 16, 17, 18)
+                ),
+            )
+    
         user.save()
 
         return user

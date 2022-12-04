@@ -7,6 +7,7 @@ class CampEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.CampEventModel
         fields = "__all__"
+        depth = 2
 
     def save(self, *args, **kwargs):
         """Поправляем тип смены при необходимости"""

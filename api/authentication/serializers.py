@@ -41,17 +41,13 @@ class RegistrationSerializer(serializers.ModelSerializer):
         )
     
     def create(self, validated_data) -> models.UserModel:
-        user = models.UserModel(**validated_data)
-
-        user.set_password(self.validated_data.get("password"))
-        user.save()
+        user = models.UserModel.objects.create_user(
+            **validated_data
+        )
         
         create_role_model(user, self.initial_data.get("citizenship", "россия").lower())
 
         return user
-    
-    def validate_email(self):
-        ...
 
 
 class ConfirmCodeSerializer(serializers.ModelSerializer):
