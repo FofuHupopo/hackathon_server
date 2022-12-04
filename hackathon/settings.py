@@ -122,6 +122,9 @@ SIMPLE_JWT = {
     'AUTH_COOKIE_SAMESITE': "Lax",
 }
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
