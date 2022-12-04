@@ -61,8 +61,8 @@ class ForeignPassportModel(models.Model):
 
     class Meta:
         db_table = "account__foreign_passport"
-        verbose_name = "Паспорт"
-        verbose_name_plural = "Паспорта"
+        verbose_name = "Паспорт (зарубежный)"
+        verbose_name_plural = "Паспорта (зарубежные)"
     
     def __str__(self) -> str:
         return f"{self.pk}: {self.series} {self.number}"
@@ -90,7 +90,7 @@ class BirthCertificateModel(models.Model):
     class Meta:
         db_table = "account__birth_certificate"
         verbose_name = "Свидетельство о рождении"
-        verbose_name_plural = "Свидетьства о рождении"
+        verbose_name_plural = "Свидетельства о рождении"
     
     def __str__(self) -> str:
         return f"{self.pk}: {self.series} {self.number}"
@@ -254,8 +254,8 @@ class RepresentativeModel(models.Model):
     
     class Meta:
         db_table = "account__representative"
-        verbose_name = "Представитель"
-        verbose_name_plural = "Представители"
+        verbose_name = "Законный представитель"
+        verbose_name_plural = "Законные представители"
         
     def __str__(self) -> str:
         return f"{self.pk}: {self.firstname} {self.lastname}"

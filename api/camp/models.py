@@ -117,8 +117,8 @@ class CampEventModel(models.Model):
 
     class Meta:
         db_table = "camp__event"
-        verbose_name = "Лагерная смена"
-        verbose_name_plural = "Лагерные смены"
+        verbose_name = "Смена"
+        verbose_name_plural = "Смены"
 
     title = models.CharField(
         "Название лагерной смены",
@@ -171,3 +171,7 @@ class CampEventModel(models.Model):
         "Наличие сертификата на отдых",
         default=False
     )
+    
+    def __str__(self) -> str:
+        return f"{self.pk}: {self.title}"
+
