@@ -18,7 +18,12 @@ class UserManager(BaseUserManager):
             
             user.user_permissions.set(
                 Permission.objects.filter(
-                    content_type_id__in=(10, 16, 17, 18)
+                    content_type_id__in=(16, 17, 18)
+                ),
+            )
+            user.user_permissions.set(
+                Permission.objects.filter(
+                    id__in=(37, 40)
                 ),
             )
     

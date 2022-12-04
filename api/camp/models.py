@@ -140,6 +140,11 @@ class CampEventModel(models.Model):
         related_name="camp_events",
         verbose_name="Лагерь-организатор"
     )
+    
+    description = models.TextField(
+        "Описание",
+        null=True, blank=True
+    )
 
     camping_type = models.CharField(
         "Тип смены",
