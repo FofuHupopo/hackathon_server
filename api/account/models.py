@@ -6,7 +6,7 @@ from api.address import models as address_models
 from .countries import COUNTRIES
 
 
-def create_role_model(user):
+def create_role_model(user, citzenship):
     role: str = user.role
     
     if role != "client":
@@ -17,7 +17,8 @@ def create_role_model(user):
         firstname=user.firstname,
         lastname=user.lastname,
         patronymic=user.patronymic,
-        phone=user.phone
+        phone=user.phone,
+        citzenship=citzenship
     )
 
 

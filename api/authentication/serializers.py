@@ -31,12 +31,14 @@ class RegistrationSerializer(serializers.ModelSerializer):
     firstname = serializers.CharField()
     lastname = serializers.CharField()
     patronymic = serializers.CharField()
+    citzenship = serializers.CharField()
     
     class Meta:
         model = models.UserModel
         fields = (
             'username', 'email', 'phone', 'role',
-            'firstname', 'lastname', 'patronymic'
+            'firstname', 'lastname', 'patronymic',
+            'citzenship', 'password',
         )
     
     def create(self, validated_data) -> models.UserModel:
@@ -45,7 +47,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(self.validated_data.get("password"))
         user.save()
         
-        create_role_model(user)
+        create_role_model(user, self.validated_data.get("citzenship", "Россия"))
 
         return user
 
