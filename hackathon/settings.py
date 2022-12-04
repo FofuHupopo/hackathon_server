@@ -32,9 +32,6 @@ INSTALLED_APPS = [
     'api.account',
     'api.camp',
     'api.request',
-    
-    #CRM
-    'crm',
 ]
 
 MIDDLEWARE = [
