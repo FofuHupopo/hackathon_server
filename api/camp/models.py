@@ -25,7 +25,8 @@ class CampOrganizationModel(models.Model):
     # Раздел "Общая информация о лагере":
 
     title = models.CharField(
-        "Название", max_length=32
+        "Название", max_length=32,
+        null=False, blank=False
     )
 
     description = models.CharField(
@@ -111,7 +112,7 @@ class CampOrganizationModel(models.Model):
         return f"{self.pk}: {self.title}"
 
 
-class СampEventModel(models.Model):
+class CampEventModel(models.Model):
     """Модель сущности лагерной смены"""
 
     class Meta:
@@ -170,11 +171,3 @@ class СampEventModel(models.Model):
         "Наличие сертификата на отдых",
         default=False
     )
-
-    def save(self, *args, **kwargs):
-        """Поправляем тип смены при необходимости"""
-
-        if self.season != "summer":
-            self.camping_type = "stationary"
-
-        return super().save(*args, **kwargs)

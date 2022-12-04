@@ -1,7 +1,7 @@
 from django.db import models
 
 from api.account.models import RepresentativeModel, ChildModel
-from api.camp.models import СampEventModel
+from api.camp.models import CampEventModel
 
 
 class RequestModel(models.Model):
@@ -14,7 +14,7 @@ class RequestModel(models.Model):
         verbose_name="Ребенок",
     )
     camp_event = models.ForeignKey(
-        СampEventModel, models.CASCADE,
+        CampEventModel, models.CASCADE,
         verbose_name="Лагерная смена"
     )
     
