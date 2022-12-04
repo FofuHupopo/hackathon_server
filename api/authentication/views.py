@@ -3,6 +3,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
@@ -59,12 +60,22 @@ class CookieTokenObtainPairView(TokenObtainPairView):
                 secure=settings.SIMPLE_JWT['AUTH_COOKIE_SECURE'],
                 httponly=settings.SIMPLE_JWT['AUTH_COOKIE_HTTP_ONLY'],
             )
-            del response.data['refresh']
+            # del response.data['refresh']
+
+        if response.data.get("access"):
+            access = AccessToken(response.data["access"])
+            user = get_user_model().objects.filter(id=access["user_id"]).first()
+
+            if user:
+                serialized_user = serializers.UserSerializer(user)
+
+                response.data["user"] = serialized_user.data
 
         return super().finalize_response(request, response, *args, **kwargs)
 
 
 class CookieTokenRefreshView(TokenRefreshView):
+    serializer_class = serializers.CookieTokenRefreshSerializer
     permission_classes = (AllowAny,)
 
     def finalize_response(self, request, response: Response, *args, **kwargs):
@@ -79,10 +90,21 @@ class CookieTokenRefreshView(TokenRefreshView):
                 samesite=settings.SIMPLE_JWT['AUTH_COOKIE_SAMESITE'],
                 domain=settings.SIMPLE_JWT['AUTH_COOKIE_DOMAIN']
             )
+            # del response.data["refresh"]
 
-            del response.data["refresh"]
+        if response.data.get("access"):
+            access = AccessToken(response.data["access"])
+            user = get_user_model().objects.filter(id=access["user_id"]).first()
+
+            if user:
+                serialized_user = serializers.UserSerializer(user)
+
+                response.data["user"] = serialized_user.data
+
+            print(access)
 
         return super().finalize_response(request, response, *args, **kwargs)
+
     
 
 class SendCodeView(APIView):
