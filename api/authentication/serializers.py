@@ -37,6 +37,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = (
             'username', 'email', 'phone', 'role',
             'firstname', 'lastname', 'patronymic',
+            "password"
         )
     
     def create(self, validated_data) -> models.UserModel:
