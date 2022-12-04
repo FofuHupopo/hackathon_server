@@ -6,7 +6,7 @@ from api.address import models as address_models
 from .countries import COUNTRIES
 
 
-def create_role_model(user, citzenship):
+def create_role_model(user, citizenship):
     role: str = user.role
     
     if role != "client":
@@ -18,7 +18,7 @@ def create_role_model(user, citzenship):
         lastname=user.lastname,
         patronymic=user.patronymic,
         phone=user.phone,
-        citzenship=citzenship
+        citizenship=citizenship
     )
 
 
@@ -99,7 +99,7 @@ class BirthCertificateModel(models.Model):
 class ChildModel(models.Model):
     citizenship = models.CharField(
         "Гражданство", max_length=128,
-        choices=COUNTRIES, default="Россия"
+        choices=COUNTRIES, default="россия"
     )
 
     firstname = models.CharField(
@@ -188,7 +188,7 @@ class ChildModel(models.Model):
 class RepresentativeModel(models.Model):
     citizenship = models.CharField(
         "Гражданство", max_length=128,
-        choices=COUNTRIES, default="Россия"
+        choices=COUNTRIES, default="россия"
     )
 
     user = models.ForeignKey(

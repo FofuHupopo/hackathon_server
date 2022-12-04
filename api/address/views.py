@@ -74,7 +74,7 @@ class CountryAutoCompleteView(APIView):
 
             if coincidence == 100:
                 return Response(
-                    [country],
+                    [country[1]],
                     status.HTTP_200_OK
                 )
 

@@ -47,7 +47,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
         user.set_password(self.validated_data.get("password"))
         user.save()
         
-        create_role_model(user, self.validated_data.get("citzenship", "Россия"))
+        create_role_model(user, self.validated_data.get("citzenship", "россия").lower())
 
         return user
 
