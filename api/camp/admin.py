@@ -6,7 +6,7 @@ from django.utils.http import urlencode
 from . import models
 
 class CampEventModelAdmin(admin.ModelAdmin):
-    list_display = ("title", "camp_organization", "view_requests")
+    list_display = ("title", "camp_organization", "view_requests", "export_requests")
 
     @admin.display(description="Заявки")
     def view_requests(self, obj):
@@ -24,6 +24,14 @@ class CampEventModelAdmin(admin.ModelAdmin):
             return qs
 
         return qs.filter(camp_organization__user=request.user)
+
+    @admin.display(description="Экспорт заявок")
+    def export_requests(self, obj):
+        url = (
+            reverse("admin:request_requestmodel_changelist")
+            + f"?camp_event_id={obj.id}"
+        )
+        return format_html('<a href="{}">Скачать в .xlsx</a>', url)
 
 class CampOrganizationModelAdmin(admin.ModelAdmin):
     list_display = ("title",)
