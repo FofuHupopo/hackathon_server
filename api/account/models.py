@@ -42,7 +42,7 @@ class RussianPassportModel(models.Model):
         verbose_name_plural = "Паспорта"
     
     def __str__(self) -> str:
-        return f"{self.pk}: {self.series} {self.number} ({self.type})"
+        return f"{self.pk}: {self.series} {self.number}"
     
 
 class ForeignPassportModel(models.Model):

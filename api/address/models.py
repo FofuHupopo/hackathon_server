@@ -52,7 +52,7 @@ class AddressModel(models.Model):
     )
     area = models.CharField(
         "Район", max_length=128,
-        null=True
+        null=True, blank=True
     )
     city = models.CharField(
         "Город", max_length=128,
@@ -69,7 +69,8 @@ class AddressModel(models.Model):
         null=True, blank=True
     )
     flat_number = models.TextField(
-        "Номер квартиры"
+        "Номер квартиры",
+        null=True, blank=True
     )
     
     objects = models.Manager()
