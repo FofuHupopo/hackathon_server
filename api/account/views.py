@@ -50,7 +50,7 @@ class PassportView(APIView):
         )
         
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.update(representative)
         
         return Response(
             serializer.data,

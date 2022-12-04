@@ -38,8 +38,9 @@ class RepresentativeSerializer(serializers.ModelSerializer):
         )
         depth = 4
         
-    def update(self, instance: models.RepresentativeModel, validated_data):
-        passport = validated_data.get("passport", None)
+    def update(self, instance: models.RepresentativeModel):
+        passport = self.initial_data.get("passport", None)
+        print(passport)
         
         if passport:
             return self._update_passport(instance, passport)
@@ -48,7 +49,7 @@ class RepresentativeSerializer(serializers.ModelSerializer):
     
     @staticmethod
     def _update_passport(instance: models.RepresentativeModel, passport):
-        if instance.citizenship == "Россия":
+        if instance.citizenship == "россия":
             if instance.russian_passport:
                 instance.russian_passport.series = passport.get("series", instance.russian_passport.series)
                 instance.russian_passport.number = passport.get("number", instance.russian_passport.number)
@@ -57,14 +58,17 @@ class RepresentativeSerializer(serializers.ModelSerializer):
 
                 instance.russian_passport.save()
             else:
-                passport = models.RussianPassportModel.objects.create(
-                    **passport
+                passport_serializer = RussianPassportSerializer(
+                    data=passport
                 )
+                passport_serializer.is_valid(raise_exception=True)
+                passport = passport_serializer.save()
 
                 instance.russian_passport = passport
                 instance.save()
         else:
             if instance.foreign_passport:
+                print("hi")
                 instance.foreign_passport.series = passport.get("series", instance.foreign_passport.series)
                 instance.foreign_passport.number = passport.get("number", instance.foreign_passport.number)
                 instance.foreign_passport.date_of_issue = passport.get("date_of_issue", instance.foreign_passport.date_of_issue)
@@ -72,9 +76,11 @@ class RepresentativeSerializer(serializers.ModelSerializer):
 
                 instance.foreign_passport.save()
             else:
-                passport = models.ForeignPassportModel.objects.create(
-                    **passport
+                passport_serializer = ForeignPassportSerializer(
+                    data=passport
                 )
+                passport_serializer.is_valid(raise_exception=True)
+                passport = passport_serializer.save()
 
                 instance.foreign_passport = passport
                 instance.save()
