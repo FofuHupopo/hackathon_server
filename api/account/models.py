@@ -42,7 +42,7 @@ class RussianPassportModel(models.Model):
         verbose_name_plural = "Паспорта"
     
     def __str__(self) -> str:
-        return f"{self.pk}: {self.series} {self.number}"
+        return f"{self.series} {self.number}"
     
 
 class ForeignPassportModel(models.Model):
@@ -65,7 +65,7 @@ class ForeignPassportModel(models.Model):
         verbose_name_plural = "Паспорта (зарубежные)"
     
     def __str__(self) -> str:
-        return f"{self.pk}: {self.series} {self.number}"
+        return f"{self.series} {self.number}"
     
 
 class BirthCertificateModel(models.Model):
@@ -93,7 +93,7 @@ class BirthCertificateModel(models.Model):
         verbose_name_plural = "Свидетельства о рождении"
     
     def __str__(self) -> str:
-        return f"{self.pk}: {self.series} {self.number}"
+        return f"{self.series} {self.number}"
 
 
 class ChildModel(models.Model):
@@ -162,7 +162,7 @@ class ChildModel(models.Model):
     )
 
     birthday_date = models.DateField(
-        "Дата регистрации"
+        "Дата рождения"
     )
     
     class Meta:
@@ -171,7 +171,7 @@ class ChildModel(models.Model):
         verbose_name_plural = "Дети"
         
     def __str__(self) -> str:
-        return f"{self.pk}: {self.firstname} {self.lastname}"
+        return f"{self.firstname} {self.lastname}"
     
     def document(self) -> str:
         if self.document_type == "passport":
@@ -258,7 +258,7 @@ class RepresentativeModel(models.Model):
         verbose_name_plural = "Законные представители"
         
     def __str__(self) -> str:
-        return f"{self.pk}: {self.firstname} {self.lastname}"
+        return f"{self.firstname} {self.lastname}"
     
     def document(self) -> str:
         if self.citizenship == "Россия":

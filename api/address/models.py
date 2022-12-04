@@ -37,7 +37,7 @@ class CityModel(models.Model):
         verbose_name_plural = "Города"
 
     def __str__(self) -> str:
-        return f"{self.pk}: {self.region}, {self.city}"
+        return f"{self.region}, {self.city}"
 
 
 
@@ -81,4 +81,4 @@ class AddressModel(models.Model):
         verbose_name_plural = "Адреса"
 
     def __str__(self) -> str:
-        return f"{self.pk}: {self.street} {self.number} {self.flat_number}"
+        return f"{self.street} {self.number} {self.flat_number}"

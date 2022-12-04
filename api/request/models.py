@@ -24,4 +24,5 @@ class RequestModel(models.Model):
         verbose_name_plural = "Заявки"
         
     def __str__(self) -> str:
-        return f"{self.pk}: {self.representative}, {self.child}, {self.camp_event}"
+        return f"{self.representative.firstname} {self.representative.lastname},\
+                 {self.child.firstname} {self.child.lastname}, {self.camp_event.title}"

@@ -3,4 +3,8 @@ from django.contrib import admin
 from . import models
 
 
-admin.site.register(models.AddressModel)
+class AddressModelAdmin(admin.ModelAdmin):
+    list_display = ("country", "city")
+
+
+admin.site.register(models.AddressModel, AddressModelAdmin)

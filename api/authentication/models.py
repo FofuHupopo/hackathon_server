@@ -70,7 +70,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self) -> str:
-        return f"{self.pk}: {self.username}, {self.email}, {self.phone}"
+        return f"{self.username}, {self.email}, {self.phone}"
 
     @classmethod
     def it_exists(cls, email: str) -> bool:
@@ -103,7 +103,7 @@ class ConfirmCodeModel(models.Model):
         verbose_name_plural = "Коды"
 
     def __str__(self) -> str:
-        return f"{self.pk}: {self.code} - {self.user.username}"
+        return f"{self.code} - {self.user.username}"
 
     def is_valid(self) -> bool:
         return timezone.now() <= self.lifetime

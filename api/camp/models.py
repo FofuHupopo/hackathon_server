@@ -22,7 +22,7 @@ class CampOrganizationModel(models.Model):
         verbose_name = "Лагерь"
         verbose_name_plural = "Лагеря"
 
-    # Раздел "Общая информация о лагере":
+    # Раздел "Общая информацияcamp_event о лагере":
 
     title = models.CharField(
         "Название", max_length=32,
@@ -109,7 +109,7 @@ class CampOrganizationModel(models.Model):
     )
 
     def __str__(self) -> str:
-        return f"{self.pk}: {self.title}"
+        return f"{self.title}"
 
 
 class CampEventModel(models.Model):
@@ -121,7 +121,7 @@ class CampEventModel(models.Model):
         verbose_name_plural = "Смены"
 
     title = models.CharField(
-        "Название лагерной смены",
+        "Название",
         max_length=64,
         null=False, blank=False
     )
@@ -130,22 +130,23 @@ class CampEventModel(models.Model):
         CampOrganizationModel,
         on_delete=models.CASCADE,
         null=False, blank=False,
-        related_name="camp_events"
+        related_name="camp_events",
+        verbose_name="Лагерь-организатор"
     )
 
     camping_type = models.CharField(
-        "Тип лагерной смены",
+        "Тип смены",
         max_length=64,
         choices=CAMPING_TYPES
     )
 
     date_begin = models.DateField(
-        "День начала лагерной смены",
+        "День начала",
         null=False, blank=False
     )
 
     date_end = models.DateField(
-        "День окончания лагерной смены",
+        "День окончания",
         null=False, blank=False
     )
 
@@ -173,5 +174,5 @@ class CampEventModel(models.Model):
     )
     
     def __str__(self) -> str:
-        return f"{self.pk}: {self.title}"
+        return f"{self.title}"
 
