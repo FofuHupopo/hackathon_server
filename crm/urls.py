@@ -4,5 +4,5 @@ from . import views
 
 
 urlpatterns = [
-    path('', views.IndexView.as_view(), name="crm")
+    path('', views.CampListView.as_view(), name="crm")
 ]

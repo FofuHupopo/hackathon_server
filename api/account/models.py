@@ -29,7 +29,7 @@ class RussianPassportModel(models.Model):
     number = models.CharField(
         "Номер", max_length=6
     )
-    date_of_issue = models.DateTimeField(
+    date_of_issue = models.DateField(
         "Дата выдачи"
     )
     whom_issued = models.TextField(
@@ -52,10 +52,10 @@ class ForeignPassportModel(models.Model):
     number = models.TextField(
         "Номер"
     )
-    date_of_issue = models.DateTimeField(
+    date_of_issue = models.DateField(
         "Дата выдачи"
     )
-    duration = models.DateTimeField(
+    duration = models.DateField(
         "Срок действия", null=True
     )
 
@@ -75,7 +75,7 @@ class BirthCertificateModel(models.Model):
     number = models.CharField(
         "Номер", max_length=6
     )
-    date_of_issue = models.DateTimeField(
+    date_of_issue = models.DateField(
         "Дата выдачи"
     )
     whom_issued = models.TextField(

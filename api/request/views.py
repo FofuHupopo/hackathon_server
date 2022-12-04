@@ -64,3 +64,57 @@ class CreateRequestView(APIView):
             serializer.data,
             status.HTTP_200_OK
         )
+
+
+class RequestView(APIView):
+    serializer_class = serializers.RequestSerializer
+
+    def get(self, request: Request):
+        representative = get_object_or_404(
+            account_models.RepresentativeModel,
+            user=request.user
+        )
+        
+        requests = models.RequestModel.objects.filter(
+            representative=representative
+        )
+        
+        serializer = self.serializer_class(
+            requests,
+            many=True
+        )
+        
+        return Response(
+            serializer.data,
+            status.HTTP_200_OK
+        )
+    
+    def delete(self, request: Request):
+        request_id = request.query_params.get("request_id")
+        
+        representative = get_object_or_404(
+            account_models.RepresentativeModel,
+            user=request.user
+        )
+        
+        request_ = get_object_or_404(
+            models.RequestModel,
+            pk=request_id
+        )
+        
+        if request_.representative != representative:
+            return Response(
+                {
+                    "detail": "Ошибка при удалении заявки"
+                },
+                status.HTTP_400_BAD_REQUEST
+            )
+        
+        request_.delete()
+        
+        return Response(
+            {
+                "detail": "Удалено"
+            },
+            status.HTTP_200_OK
+        )
