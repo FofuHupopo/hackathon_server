@@ -3,6 +3,7 @@ from django.contrib import admin
 from . import models
 
 admin.site.site_header = "Админ-панель"
+admin.site.site_url = 'http://localhost:3000/'
 
 
 class ChildModelAdmin(admin.ModelAdmin):
