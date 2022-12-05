@@ -35,7 +35,7 @@ class CreateRequestView(APIView):
         )
         camp_event = get_object_or_404(
             camp_models.CampEventModel,
-            pk=child_id
+            pk=camp_event_id
         )
         representative = get_object_or_404(
             account_models.RepresentativeModel,
